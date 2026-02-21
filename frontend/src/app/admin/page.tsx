@@ -4,8 +4,9 @@ import Link from 'next/link';
 // NOTE: Fetching from the Express backend in an actual scenario requires passing the JWT Bearer token in headers. 
 // For this Admin Panel preview, we will fetch directly from our new admin endpoint but handle errors gracefully if unauthorized.
 async function fetchAdminStats() {
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
     try {
-        const res = await fetch('http://localhost:4000/api/admin/dashboard', {
+        const res = await fetch(`${API_URL}/api/admin/dashboard`, {
             cache: 'no-store',
             // headers: { Authorization: `Bearer ${ADMIN_TOKEN}` } // In a real flow, get token from cookies
         });

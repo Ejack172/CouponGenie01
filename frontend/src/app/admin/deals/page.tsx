@@ -2,8 +2,9 @@ import Link from 'next/link';
 import { Pencil, Trash2 } from 'lucide-react';
 
 async function fetchDeals() {
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
     try {
-        const res = await fetch('http://localhost:4000/api/admin/deals', {
+        const res = await fetch(`${API_URL}/api/admin/deals`, {
             cache: 'no-store',
             headers: { 'x-dev-mock-admin': 'true' }
         });
@@ -56,7 +57,7 @@ export default async function AdminDeals() {
                                 </td>
                                 <td className="py-4 px-4 text-center">
                                     <span className={`text-xs px-2 py-1 rounded-full font-bold uppercase ${deal.status === 'APPROVED' ? 'bg-emerald-100 text-emerald-700' :
-                                            deal.status === 'PENDING' ? 'bg-amber-100 text-amber-700' : 'bg-red-100 text-red-700'
+                                        deal.status === 'PENDING' ? 'bg-amber-100 text-amber-700' : 'bg-red-100 text-red-700'
                                         }`}>
                                         {deal.status}
                                     </span>

@@ -3,9 +3,9 @@ import HeroCarousel from '@/components/HeroCarousel';
 import DealCard from '@/components/DealCard';
 
 async function fetchDeals() {
-  // Using localhost API (Ensure Express is running)
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
   try {
-    const res = await fetch('http://localhost:4000/api/deals?limit=24', {
+    const res = await fetch(`${API_URL}/api/deals?limit=24`, {
       next: { revalidate: 60 } // Revalidate every 60 seconds (ISR)
     });
     if (!res.ok) throw new Error('API down');

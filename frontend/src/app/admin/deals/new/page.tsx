@@ -12,15 +12,17 @@ export default function NewDealForm() {
 
     // Hydrate form dependencies
     useEffect(() => {
-        fetch('http://localhost:4000/api/stores').then(res => res.json()).then(data => setStores(data.data || []));
-        fetch('http://localhost:4000/api/categories').then(res => res.json()).then(data => setCategories(data.data || []));
+        const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+        fetch(`${API_URL}/api/stores`).then(res => res.json()).then(data => setStores(data.data || []));
+        fetch(`${API_URL}/api/categories`).then(res => res.json()).then(data => setCategories(data.data || []));
     }, []);
 
     const onSubmit = async (data: any) => {
+        const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
         try {
             // Mock logic calculating % internally if needed, but passing raw
             data.isLootDeal = data.isLootDeal === "true";
-            const res = await fetch('http://localhost:4000/api/admin/deals', {
+            const res = await fetch(`${API_URL}/api/admin/deals`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
