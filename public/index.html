@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CouponGenie.in - Preview</title>
+    <style>
+        :root {
+            --bg-color: #f3f4f6;
+            --card-bg: #ffffff;
+            --text-main: #1f2937;
+            --text-muted: #6b7280;
+            --primary: #4f46e5;
+            --accent: #ef4444;
+            --radius-md: 12px;
+            --shadow-sm: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-hover: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            padding: 2rem;
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        header h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .deals-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .deal-card {
+            background: var(--card-bg);
+            border-radius: var(--radius-md);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.2s ease-in-out;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .deal-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .badge-loot {
+            position: absolute;
+            top: 15px;
+            right: -30px;
+            background: var(--accent);
+            color: white;
+            padding: 5px 30px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            transform: rotate(45deg);
+            text-transform: uppercase;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .deal-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .store-logo {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            object-fit: cover;
+            border: 1px solid #e5e7eb;
+            background: white;
+        }
+
+        .deal-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        .price-section {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .price-new {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #10b981;
+        }
+
+        .price-old {
+            font-size: 1rem;
+            color: var(--text-muted);
+            text-decoration: line-through;
+        }
+
+        .discount-tag {
+            background: #d1fae5;
+            color: #065f46;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .deal-desc {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            flex-grow: 1;
+        }
+
+        .deal-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid #e5e7eb;
+            padding-top: 1rem;
+            margin-top: auto;
+        }
+
+        .coupon-code {
+            background: #f3f4f6;
+            border: 1px dashed var(--text-muted);
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            color: var(--primary);
+        }
+
+        .get-deal-btn {
+            background: var(--primary);
+            color: white;
+            text-decoration: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: background 0.2s;
+        }
+
+        .get-deal-btn:hover {
+            background: #4338ca;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>🛍️ CouponGenie.in <span style="font-size: 1rem; color: #6b7280; font-weight: 500;">LIVE PREVIEW</span></h1>
+        <div style="display: flex; gap: 1rem;">
+            <select id="categoryFilter" style="padding: 0.5rem; border-radius: 6px; border: 1px solid #ccc;">
+                <option value="">All Categories</option>
+            </select>
+        </div>
+    </header>
+
+    <div class="deals-grid" id="dealsContainer">
+        <!-- Deals will be injected here via Fetch API -->
+        <p style="text-align: center; color: #6b7280; grid-column: 1 / -1;">Loading Deals from API...</p>
+    </div>
+
+    <script>
+        // Fetch Categories
+        fetch('/api/categories')
+            .then(res => res.json())
+            .then(json => {
+                const select = document.getElementById('categoryFilter');
+                json.data.forEach(cat => {
+                    select.innerHTML += `<option value="${cat.id}">${cat.name}</option>`;
+                });
+            });
+
+        // Fetch Deals
+        const fetchDeals = (categoryId = '') => {
+            const url = categoryId ? `/api/deals?categoryId=${categoryId}` : '/api/deals';
+            
+            fetch(url)
+                .then(res => res.json())
+                .then(json => {
+                    const container = document.getElementById('dealsContainer');
+                    container.innerHTML = '';
+                    
+                    if(json.data.length === 0) {
+                        container.innerHTML = '<p>No deals found.</p>';
+                        return;
+                    }
+
+                    json.data.forEach(deal => {
+                        const hasPrices = deal.originalPrice && deal.discountedPrice;
+                        
+                        const card = document.createElement('div');
+                        card.className = 'deal-card';
+                        card.innerHTML = `
+                            ${deal.isLootDeal ? '<div class="badge-loot">LOOT</div>' : ''}
+                            <div class="deal-header">
+                                <img src="${deal.store.logoURL || 'https://via.placeholder.com/48'}" alt="${deal.store.name}" class="store-logo">
+                                <div class="deal-title">${deal.title}</div>
+                            </div>
+                            
+                            <div class="price-section">
+                                ${hasPrices ? `
+                                    <span class="price-new">₹${deal.discountedPrice}</span>
+                                    <span class="price-old">₹${deal.originalPrice}</span>
+                                ` : ''}
+                                ${deal.discountPercentage ? `<span class="discount-tag">${deal.discountPercentage}% OFF</span>` : ''}
+                            </div>
+                            
+                            <div class="deal-desc">${deal.description || `Best offer on ${deal.category.name} from ${deal.store.name}`}</div>
+                            
+                            <div class="deal-footer">
+                                ${deal.couponCode ? `<div class="coupon-code">${deal.couponCode}</div>` : '<span>🎉 Deal Activated</span>'}
+                                <a href="${deal.affiliateLink || '#'}" class="get-deal-btn" onclick="fetch('/api/deals/${deal.id}/click', {method: 'PATCH'})">Get Deal</a>
+                            </div>
+                        `;
+                        container.appendChild(card);
+                    });
+                })
+                .catch(err => {
+                    document.getElementById('dealsContainer').innerHTML = '<p style="color: red;">Failed to connect to backend API.</p>';
+                    console.error(err);
+                });
+        };
+
+        // Event Listeners
+        document.getElementById('categoryFilter').addEventListener('change', (e) => {
+            fetchDeals(e.target.value);
+        });
+
+        // Initialize
+        fetchDeals();
+    </script>
+</body>
+</html>
