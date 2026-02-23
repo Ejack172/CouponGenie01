@@ -5,8 +5,7 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'logo.clearbit.com',
-        pathname: '/**',
+        hostname: '**',
       },
     ],
   },

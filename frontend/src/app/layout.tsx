@@ -1,9 +1,5 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
 import './globals.css';
-import Footer from '@/components/Footer';
-
-const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: 'CouponGenie.in - Deals, Coupons & Offers',
@@ -27,12 +23,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="bg-slate-50">
-      <body className={`${inter.className} text-slate-800 antialiased min-h-screen flex flex-col`}>
-        <div className="flex-1">
-          {children}
-        </div>
-        <Footer />
+    <html lang="en">
+      <body>
+        {children}
       </body>
     </html>
   );
